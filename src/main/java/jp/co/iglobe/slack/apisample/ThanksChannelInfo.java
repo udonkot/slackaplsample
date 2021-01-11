@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +65,8 @@ public class ThanksChannelInfo {
 
             // orElseなので投稿なしなら空のリストを返す。
             List<Message> newList = resultList.orElse(Collections.emptyList());
+            Map<String, Integer> cntMap = new HashMap<>();
+            System.out.println("***** コメント投稿日 *****");
             if(!newList.isEmpty()) {
                 // 1件ずつ処理
                 newList.stream().forEach(msg -> {
@@ -82,7 +81,19 @@ public class ThanksChannelInfo {
 
                         // 結果出力
                         System.out.println("user:" + userName + " date:" + ldt.getMonthValue() +"/" + ldt.getDayOfMonth());
+
+                        if( cntMap.get(userName) != null ) {
+                            cntMap.put(userName, cntMap.get(userName) + 1);
+                        } else {
+                            cntMap.put(userName, 1);
+                        }
                     }
+                });
+
+                //
+                System.out.println("***** コメント投稿数 *****");
+                cntMap.forEach((userName,cnt) -> {
+                    System.out.println("ユーザ名:" + userName + " 回数：" + cnt);
                 });
             } else {
                 System.out.println("non message");
@@ -115,7 +126,7 @@ public class ThanksChannelInfo {
 
         Map<String, User> userMap = userList.stream().collect(
                 Collectors.toMap(User::getId, user -> {
-                    System.out.println("key:" + user.getId() + " val:" + user.getName());
+//                    System.out.println("key:" + user.getId() + " val:" + user.getName());
                     return user;
                 }));
 
